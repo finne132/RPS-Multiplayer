@@ -24,7 +24,7 @@ $( document ).ready(function() {
     // #p2name - player 2's name display 
 
 // #chat - row containing 2 screen-wide columns for displaying chat and text entry box with submit button
-    // #chatDisplay - div where chat is displayed 
+    // #chatdisplay - div where chat is displayed 
     // #chatEntry - div containing textbox and submit button for name entry
         // #chatTextBox - text box for chat entry 
         // #chatSubmit - submit button for chat text
@@ -170,6 +170,62 @@ database.ref("/players/").on("value", function(snapshot) {
 	}
     
 });
+// Attach a listener that detects user disconnection events
+database.ref("/players/").on("child_removed", function(snapshot) {
+	var msg = snapshot.val().name + " has disconnected!";
+
+	// Get a key for the disconnection chat entry
+	var chatKey = database.ref().child("/chat/").push().key;
+
+	// Save the disconnection chat entry
+	database.ref("/chat/" + chatKey).set(msg);
+});
+
+// Attach a listener to the database /chat/ node to listen for any new chat messages
+database.ref("/chat/").on("child_added", function(snapshot) {
+	var chatMsg = snapshot.val();
+	var chatEntry = $("<div>").html(chatMsg);
+
+	// Change the color of the chat message depending on user or connect/disconnect event
+	if (chatMsg.includes("disconnected")) {
+		chatEntry.addClass("chatColorDisconnected");
+	} else if (chatMsg.includes("joined")) {
+		chatEntry.addClass("chatColorJoined");
+	} else if (chatMsg.startsWith(yourPlayerName)) {
+		chatEntry.addClass("chatColor1");
+	} else {
+		chatEntry.addClass("chatColor2");
+	}
+
+	$("#chatdisplay").append(chatEntry);
+	$("#chatdisplay").scrollTop($("#chatdisplay")[0].scrollHeight);
+});
+
+// Attach a listener to the database /turn/ node to listen for any changes
+database.ref("/turn/").on("value", function(snapshot) {
+	// Check if it's p1's turn
+	if (snapshot.val() === 1) {
+		console.log("TURN 1");
+		turn = 1;
+
+		// Update the display if both players are in the game
+		if (p1 && p2) {
+			$("#playerPanel1").addClass("playerPanelTurn");
+			$("#playerPanel2").removeClass("playerPanelTurn");
+			$("#waitingNotice").html("Waiting on " + p1Name + " to choose...");
+		}
+	} else if (snapshot.val() === 2) {
+		console.log("TURN 2");
+		turn = 2;
+
+		// Update the display if both players are in the game
+		if (p1 && p2) {
+			$("#playerPanel1").removeClass("playerPanelTurn");
+			$("#playerPanel2").addClass("playerPanelTurn");
+			$("#waitingNotice").html("Waiting on " + p2Name + " to choose...");
+		}
+	}
+});
 
 // Attach an event handler to the "Submit" button to add a new user to the database
 $("#add-name").on("click", function(event) {
@@ -235,6 +291,24 @@ $("#add-name").on("click", function(event) {
 
 		// Reset the name input box
 		$("#name-input").val("");	
+	}
+});
+
+// Attach an event handler to the chat "Send" button to append the new message to the conversation
+$("#chat-send").on("click", function(event) {
+	event.preventDefault();
+
+	// First, make sure that the player exists and the message box is non-empty
+	if ( (yourPlayerName !== "") && ($("#chat-input").val().trim() !== "") ) {
+		// Grab the message from the input box and subsequently reset the input box
+		var msg = yourPlayerName + ": " + $("#chat-input").val().trim();
+		$("#chat-input").val("");
+
+		// Get a key for the new chat entry
+		var chatKey = database.ref().child("/chat/").push().key;
+
+		// Save the new chat entry
+		database.ref("/chat/" + chatKey).set(msg);
 	}
 });
 
