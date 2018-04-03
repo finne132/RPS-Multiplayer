@@ -103,8 +103,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		p1name = p1.name;
 
 		// display player 1's name and score data 
-		$("#p1name").text(p1name + " ");
-		$("#p1data").html("Wins: " + p1.win + " Losses: " + p1.loss + " Ties: " + p1.tie);
+		$("#p1display").text(`${p1name} has ${p1.win} wins ${p1.loss} losses and ${p1.tie} ties`);
     } 
 
     // what happens if player 1 doesn't exist?
@@ -129,8 +128,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		p2name = p2.name;
 
 		// display player 1's name and score data 
-		$("#p2name").text(p2name + " ");
-		$("#p2data").html("Wins: " + p2.win + " Losses: " + p2.loss + " Ties: " + p2.tie);
+		$("#p2display").text(`${p2name} has ${p2.win} wins ${p2.loss} losses and ${p2.tie} ties`);
     } 
 
     // what happens if player 1 doesn't exist?
