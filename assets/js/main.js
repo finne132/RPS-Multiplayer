@@ -152,5 +152,85 @@ database.ref("/players/").on("value", function(snapshot) {
 		// Update the center display
 		$("#outcome").html("Waiting on " + p1name + " to choose...");
     }
+
+    	// If both players leave the game, empty the chat session
+	if (!p1 && !p2) {
+		database.ref("/chat/").remove();
+		database.ref("/turn/").remove();
+		database.ref("/outcome/").remove();
+
+		$("#chatdisplay").empty();
+		$("#p1displaydata").removeClass("yourTurn");
+		$("#p2displaydata").removeClass("yourTurn");
+		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
+	}
     
+});
+
+// Attach an event handler to the "Submit" button to add a new user to the database
+$("#add-name").on("click", function(event) {
+	event.preventDefault();
+
+	// First, make sure that the name field is non-empty and we are still waiting for a player
+	if ( ($("#name-input").val().trim() !== "") && !(player1 && player2) ) {
+		// Adding player1
+		if (player1 === null) {
+			console.log("Adding Player 1");
+
+			yourPlayerName = $("#name-text").val().trim();
+			p1 = {
+				name: yourPlayerName,
+				win: 0,
+				loss: 0,
+				tie: 0,
+				choice: ""
+			};
+
+			// Add player 1 to the database
+			database.ref().child("/players/p1").set(p1);
+
+			// Player 1 is first so turn gets the value of 1
+			database.ref().child("/turn").set(1);
+
+            // If this user disconnects, remove them from the database. Refreshing
+            // the browser counts as disconnecting too. Could prevent that
+            // with localStorage I bet but... eh... priorities
+            database.ref("/players/p1").onDisconnect().remove();
+            
+        } 
+        // if player 1 exists and player 2 does not exist...
+        else if( (player1 !== null) && (player2 === null) ) {
+			// Then add player 2
+			console.log("Adding Player 2");
+			yourPlayerName = $("#name-text").val().trim();
+			p2 = {
+				name: yourPlayerName,
+				win: 0,
+				loss: 0,
+				tie: 0,
+				choice: ""
+			};
+
+			// Add player 2 to the database
+			database.ref().child("/players/p2").set(p2);
+
+			// If this user disconnects, remove them from the database. Refreshing
+            // the browser counts as disconnecting too. Could prevent that
+            // with localStorage I bet but... eh... priorities
+			database.ref("/players/p2").onDisconnect().remove();
+		}
+
+		// Add a user joining message to the chat
+		var msg = yourPlayerName + " has joined the game";
+		console.log(`user joined chat, displaying... ${msg}`);
+
+		// Get a key for the join chat entry
+		var chatKey = database.ref().child("/chat/").push().key;
+
+		// Save the join chat entry
+		database.ref("/chat/" + chatKey).set(msg);
+
+		// Reset the name input box
+		$("#name-input").val("");	
+	}
 });
