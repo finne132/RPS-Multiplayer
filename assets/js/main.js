@@ -29,7 +29,7 @@
 
 // -----DATABASE STRUCTURE-----DATABASE STRUCTURE-----DATABASE STRUCTURE-----DATABASE STRUCTURE-----DATABASE STRUCTURE-----DATABASE STRUCTURE
 
-// database >
+// https://rps-multiplayer-cc7bb.firebaseio.com/
     // players >
         // p1 >
             // name
