@@ -84,8 +84,8 @@ let p2name = "";
 let yourPlayerName = "";
 
 // Store the player choices
-let p1choice = "";
-let p2choice = "";
+let p1Choice = "";
+let p2Choice = "";
 
 // set the turn variable equal to player 1's turn
 let turn = 1;
@@ -210,7 +210,7 @@ database.ref("/turn/").on("value", function(snapshot) {
 		if (p1 && p2) {
 			$("#playerPanel1").addClass("playerPanelTurn");
 			$("#playerPanel2").removeClass("playerPanelTurn");
-			$("#waitingNotice").html("Waiting on " + p1Name + " to choose...");
+			$("#waitingNotice").html("Waiting on " + p1name + " to choose...");
 		}
 	} else if (snapshot.val() === 2) {
 		console.log("TURN 2");
@@ -220,7 +220,7 @@ database.ref("/turn/").on("value", function(snapshot) {
 		if (p1 && p2) {
 			$("#playerPanel1").removeClass("playerPanelTurn");
 			$("#playerPanel2").addClass("playerPanelTurn");
-			$("#waitingNotice").html("Waiting on " + p2Name + " to choose...");
+			$("#waitingNotice").html("Waiting on " + p2name + " to choose...");
 		}
 	}
 });
@@ -310,4 +310,185 @@ $("#chat-send").on("click", function(event) {
 	}
 });
 
+// Monitor p1's selection
+$("#rock").on("click", function() {
+	// Make selections only when both players are in the game
+	if (p1 && p2 && (yourPlayerName === p1.name) && (turn === 1) ) {
+		// Record p1's choice
+		var choice = $(this).text().trim();
+		console.log("player selected "+  $(this).text());
+		// Record the player choice into the database
+		p1Choice = choice;
+		database.ref().child("/players/p1/choice").set(choice);
+
+		// Set the turn value to 2, as it is now p2's turn
+		turn = 2;
+		database.ref().child("/turn").set(2);
+	}
+});
+
+$("#paper").on("click", function() {
+	// Make selections only when both players are in the game
+	if (p1 && p2 && (yourPlayerName === p1.name) && (turn === 1) ) {
+		// Record p1's choice
+		var choice = $(this).text().trim();
+		console.log("player selected "+  $(this).text());
+		// Record the player choice into the database
+		p1Choice = choice;
+		database.ref().child("/players/p1/choice").set(choice);
+
+		// Set the turn value to 2, as it is now p2's turn
+		turn = 2;
+		database.ref().child("/turn").set(2);
+	}
+});
+
+$("#scissors").on("click", function() {
+	// Make selections only when both players are in the game
+	if (p1 && p2 && (yourPlayerName === p1.name) && (turn === 1) ) {
+		// Record p1's choice
+		var choice = $(this).text().trim();
+		console.log("player selected "+  $(this).text());
+		// Record the player choice into the database
+		p1Choice = choice;
+		database.ref().child("/players/p1/choice").set(choice);
+
+		// Set the turn value to 2, as it is now p2's turn
+		turn = 2;
+		database.ref().child("/turn").set(2);
+	}
+});
+
+// Monitor p2's selection
+$("#rock").on("click", function() {
+	event.preventDefault();
+
+	// Make selections only when both players are in the game
+	if (p1 && p2 && (yourPlayerName === p2.name) && (turn === 2) ) {
+		// Record p2's choice
+		var choice = $(this).text().trim();
+
+		// Record the player choice into the database
+		p2Choice = choice;
+		database.ref().child("/players/p2/choice").set(choice);
+
+		// Compare p1 and player 2 choices and record the outcome
+		rpsCompare();
+	}
+});
+
+$("#paper").on("click", function() {
+	event.preventDefault();
+
+	// Make selections only when both players are in the game
+	if (p1 && p2 && (yourPlayerName === p2.name) && (turn === 2) ) {
+		// Record p2's choice
+		var choice = $(this).text().trim();
+
+		// Record the player choice into the database
+		p2Choice = choice;
+		database.ref().child("/players/p2/choice").set(choice);
+
+		// Compare p1 and player 2 choices and record the outcome
+		rpsCompare();
+	}
+});
+
+$("#scissors").on("click", function() {
+	event.preventDefault();
+
+	// Make selections only when both players are in the game
+	if (p1 && p2 && (yourPlayerName === p2.name) && (turn === 2) ) {
+		// Record p2's choice
+		var choice = $(this).text().trim();
+
+		// Record the player choice into the database
+		p2Choice = choice;
+		database.ref().child("/players/p2/choice").set(choice);
+
+		// Compare p1 and player 2 choices and record the outcome
+		rpsCompare();
+	}
+});
+
+// rpsCompare is the main rock/paper/scissors logic to see which player wins
+function rpsCompare() {
+	if (p1.choice === "Rock") {
+		if (p2.choice === "Rock") {
+			// Tie
+			console.log("tie");
+
+			database.ref().child("/outcome/").set("Tie game!");
+			database.ref().child("/players/p1/tie").set(p1.tie + 1);
+			database.ref().child("/players/p2/tie").set(p2.tie + 1);
+		} else if (p2.choice === "Paper") {
+			// p2 wins
+			console.log("paper wins");
+
+			database.ref().child("/outcome/").set("Paper wins!");
+			database.ref().child("/players/p1/loss").set(p1.loss + 1);
+			database.ref().child("/players/p2/win").set(p2.win + 1);
+		} else { // scissors
+			// p1 wins
+			console.log("rock wins");
+
+			database.ref().child("/outcome/").set("Rock wins!");
+			database.ref().child("/players/p1/win").set(p1.win + 1);
+			database.ref().child("/players/p2/loss").set(p2.loss + 1);
+		}
+
+	} else if (p1.choice === "Paper") {
+		if (p2.choice === "Rock") {
+			// p1 wins
+			console.log("paper wins");
+
+			database.ref().child("/outcome/").set("Paper wins!");
+			database.ref().child("/players/p1/win").set(p1.win + 1);
+			database.ref().child("/players/p2/loss").set(p2.loss + 1);
+		} else if (p2.choice === "Paper") {
+			// Tie
+			console.log("tie");
+
+			database.ref().child("/outcome/").set("Tie game!");
+			database.ref().child("/players/p1/tie").set(p1.tie + 1);
+			database.ref().child("/players/p2/tie").set(p2.tie + 1);
+		} else { // Scissors
+			// p2 wins
+			console.log("scissors win");
+
+			database.ref().child("/outcome/").set("Scissors win!");
+			database.ref().child("/players/p1/loss").set(p1.loss + 1);
+			database.ref().child("/players/p2/win").set(p2.win + 1);
+		}
+
+	} else if (p1.choice === "Scissors") {
+		if (p2.choice === "Rock") {
+			// p2 wins
+			console.log("rock wins");
+
+			database.ref().child("/outcome/").set("Rock wins!");
+			database.ref().child("/players/p1/loss").set(p1.loss + 1);
+			database.ref().child("/players/p2/win").set(p2.win + 1);
+		} else if (p2.choice === "Paper") {
+			// p1 wins
+			console.log("scissors win");
+
+			database.ref().child("/outcome/").set("Scissors win!");
+			database.ref().child("/players/p1/win").set(p1.win + 1);
+			database.ref().child("/players/p2/loss").set(p2.loss + 1);
+		} else {
+			// Tie
+			console.log("tie");
+
+			database.ref().child("/outcome/").set("Tie game!");
+			database.ref().child("/players/p1/tie").set(p1.tie + 1);
+			database.ref().child("/players/p2/tie").set(p2.tie + 1);
+		}
+
+	}
+
+	// Set the turn value to 1, as it is now p1's turn
+	turn = 1;
+	database.ref().child("/turn").set(1);
+}
 });
