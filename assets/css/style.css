@@ -7,3 +7,11 @@
 #p1name, #p2name{
     font-weight:bold;
 }
+
+icon, button {
+    width:100%;
+}
+
+.btn-primary{
+    height:60px;
+}
