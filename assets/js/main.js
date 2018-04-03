@@ -42,6 +42,12 @@
             // loss
             // tie
 
+
+// logic notes: 
+// if outcome is 1 = "player 1 wins"
+// if outcome is 2 = "player 2 wins"
+// if outcome is 0 = "the result is a tie"
+
 // firebase project configuration settings
 var config = {
     apiKey: "AIzaSyClxrsOoB1gRb2q0Cp5moMriuBUd8i9lbY",
@@ -93,8 +99,8 @@ database.ref("/players/").on("value", function(snapshot) {
 		p1name = p1.name;
 
 		// display player 1's name and score data 
-		$("#p1name").text(p1name);
-		$("#p1data").html("Wins: " + p1.win + ", Losses: " + p1.loss + ", Tie: " + p1.tie);
+		$("#p1name").text(p1name + " ");
+		$("#p1data").html("Wins: " + p1.win + " Losses: " + p1.loss + " Ties: " + p1.tie);
     } 
 
     // what happens if player 1 doesn't exist?
@@ -108,7 +114,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		database.ref("/outcome/").remove();
 		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
 		$("#scoreboard").html("Waiting for Players to join");
-		$("#p2data").html("Win: 0, Loss: 0, Tie: 0");
+		$("#p2data").html("Wins: 0 Losses: 0 Ties: 0");
     }
 
     if (snapshot.child("p2").exists()) {
@@ -119,8 +125,8 @@ database.ref("/players/").on("value", function(snapshot) {
 		p2name = p2.name;
 
 		// display player 1's name and score data 
-		$("#p2name").text(p2name);
-		$("#p2data").html("Wins: " + p2.win + ", Losses: " + p2.loss + ", Tie: " + p2.tie);
+		$("#p2name").text(p2name + " ");
+		$("#p2data").html("Wins: " + p2.win + " Losses: " + p2.loss + " Ties: " + p2.tie);
     } 
 
     // what happens if player 1 doesn't exist?
@@ -134,7 +140,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		database.ref("/outcome/").remove();
 		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
 		$("#scoreboard").html("Waiting for Players to join");
-		$("#p2data").html("Win: 0, Loss: 0, Tie: 0");
+		$("#p2data").html("Wins: 0 Losses: 0 Ties: 0");
     }
     
     // If both players are now present, it's player1's turn
