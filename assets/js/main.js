@@ -108,6 +108,32 @@ database.ref("/players/").on("value", function(snapshot) {
 		database.ref("/outcome/").remove();
 		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
 		$("#scoreboard").html("Waiting for Players to join");
-		$("#player1Stats").html("Win: 0, Loss: 0, Tie: 0");
+		$("#p2data").html("Win: 0, Loss: 0, Tie: 0");
+    }
+
+    if (snapshot.child("p2").exists()) {
+		console.log("Player 2 exists in the database");
+
+		// set local variables for player 1
+		p1 = snapshot.val().p2;
+		p2name = p2.name;
+
+		// display player 1's name and score data 
+		$("#p2name").text(p2name);
+		$("#p2data").html("Wins: " + p2.win + ", Losses: " + p2.loss + ", Tie: " + p2.tie);
+    } 
+
+    // what happens if player 1 doesn't exist?
+    else {
+		console.log("Player 2 does NOT exist in the database");
+		p2 = null;
+		p2name = "";
+
+		// Display "empty" state for p1 
+		$("#p2name").text("Waiting for Player 2...");
+		database.ref("/outcome/").remove();
+		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
+		$("#scoreboard").html("Waiting for Players to join");
+		$("#p2data").html("Win: 0, Loss: 0, Tie: 0");
     }
 });
