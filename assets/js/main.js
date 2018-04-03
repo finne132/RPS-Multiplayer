@@ -1,6 +1,6 @@
 "use strict";
 
-// ID selectors
+// -----ID selectors-----ID selectors-----ID selectors-----ID selectors-----ID selectors-----ID selectors-----ID selectors-----
 
 // maintitle - main title div
 
@@ -26,3 +26,15 @@
         // chatSubmit - submit button for chat text
 
 // foot - selector for the footer
+
+var config = {
+    apiKey: "AIzaSyClxrsOoB1gRb2q0Cp5moMriuBUd8i9lbY",
+    authDomain: "rps-multiplayer-cc7bb.firebaseapp.com",
+    databaseURL: "https://rps-multiplayer-cc7bb.firebaseio.com",
+    projectId: "rps-multiplayer-cc7bb",
+    storageBucket: "rps-multiplayer-cc7bb.appspot.com",
+    messagingSenderId: "864869163976"
+  };
+  firebase.initializeApp(config);
+
+  var database = firebase.database();
