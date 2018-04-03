@@ -184,15 +184,10 @@ database.ref("/chat/").on("child_added", function(snapshot) {
 	var chatMsg = snapshot.val();
 	var chatEntry = $("<div>").html(chatMsg);
 
-	// Change the color of the chat message depending on user or connect/disconnect event
-	if (chatMsg.includes("disconnected")) {
-		chatEntry.addClass("chatColorDisconnected");
-	} else if (chatMsg.includes("joined")) {
-		chatEntry.addClass("chatColorJoined");
-	} else if (chatMsg.startsWith(yourPlayerName)) {
-		chatEntry.addClass("chatColor1");
+	if (chatMsg.startsWith(yourPlayerName)) {
+		chatEntry.addClass("p1color");
 	} else {
-		chatEntry.addClass("chatColor2");
+		chatEntry.addClass("p2color");
 	}
 
 	$("#chatdisplay").append(chatEntry);
@@ -208,9 +203,9 @@ database.ref("/turn/").on("value", function(snapshot) {
 
 		// Update the display if both players are in the game
 		if (p1 && p2) {
-			$("#playerPanel1").addClass("playerPanelTurn");
-			$("#playerPanel2").removeClass("playerPanelTurn");
-			$("#waitingNotice").html("Waiting on " + p1name + " to choose...");
+			$("#p1display").addClass("yourTurn");
+			$("#p2display").removeClass("yourTurn");
+			$("#outcome").html("Waiting on " + p1name + " to choose...");
 		}
 	} else if (snapshot.val() === 2) {
 		console.log("TURN 2");
@@ -218,9 +213,9 @@ database.ref("/turn/").on("value", function(snapshot) {
 
 		// Update the display if both players are in the game
 		if (p1 && p2) {
-			$("#playerPanel1").removeClass("playerPanelTurn");
-			$("#playerPanel2").addClass("playerPanelTurn");
-			$("#waitingNotice").html("Waiting on " + p2name + " to choose...");
+			$("#p1display").removeClass("yourTurn");
+			$("#p2display").addClass("yourTurn");
+			$("#outcome").html("Waiting on " + p2name + " to choose...");
 		}
 	}
 });
@@ -373,7 +368,7 @@ $("#rock").on("click", function() {
 		database.ref().child("/players/p2/choice").set(choice);
 
 		// Compare p1 and player 2 choices and record the outcome
-		rpsCompare();
+		compareChoices();
 	}
 });
 
@@ -390,7 +385,7 @@ $("#paper").on("click", function() {
 		database.ref().child("/players/p2/choice").set(choice);
 
 		// Compare p1 and player 2 choices and record the outcome
-		rpsCompare();
+		compareChoices();
 	}
 });
 
@@ -407,12 +402,12 @@ $("#scissors").on("click", function() {
 		database.ref().child("/players/p2/choice").set(choice);
 
 		// Compare p1 and player 2 choices and record the outcome
-		rpsCompare();
+		compareChoices();
 	}
 });
 
-// rpsCompare is the main rock/paper/scissors logic to see which player wins
-function rpsCompare() {
+// compareChoices is the main rock/paper/scissors logic to see which player wins
+function compareChoices() {
 	if (p1.choice === "Rock") {
 		if (p2.choice === "Rock") {
 			// Tie
