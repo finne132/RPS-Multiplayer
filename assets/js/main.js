@@ -145,5 +145,6 @@ database.ref("/players/").on("value", function(snapshot) {
 
 		// Update the center display
 		$("#outcome").html("Waiting on " + p1name + " to choose...");
-	}
+    }
+    
 });
