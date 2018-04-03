@@ -233,10 +233,14 @@ database.ref("/turn/").on("value", function(snapshot) {
 	}
 });
 
-// Attach an event handler to the "Submit" button to add a new user to the database
+// The database is listening for the submit button to be pressed
+// if player 1 is not already in the database, then it will add the
+// first submission as p1 
+// if player 1 is already in the database, then it will add the next
+// submission as p2
 $("#add-name").on("click", function(event) {
 	event.preventDefault();
-	// First, make sure that the name field is non-empty and we are still waiting for a player
+	// p1 add: make sure that the name field has text AND we dont have any players already
 	if ( ($("#name-input").val().trim() !== "") && !(p1 && p2) ) {
 		// Adding p1
 		if (p1 === null) {
@@ -251,10 +255,10 @@ $("#add-name").on("click", function(event) {
 				choice: ""
 			};
 
-			// Add player 1 to the database
+			// if there is no player 1, write the above object to the db
 			database.ref().child("/players/p1").set(p1);
 
-			// Player 1 is first so turn gets the value of 1
+			// set turn to 1 becauase player 1 goes first
 			database.ref().child("/turn").set(1);
 
             // If this user disconnects, remove them from the database. Refreshing
@@ -263,9 +267,11 @@ $("#add-name").on("click", function(event) {
             database.ref("/players/p1").onDisconnect().remove();
             
         } 
-        // if player 1 exists and player 2 does not exist...
+		// else if p1 already exists (aka is not null)
+		// and p2 doesnt already exist, then add to player 2
+		// the check for "is there text in the box" still applies
+		// down here too 
         else if( (p1 !== null) && (p2 === null) ) {
-			// Then add player 2
 			console.log("Adding Player 2");
 			yourPlayerName = $("#name-input").val().trim();
 			p2 = {
@@ -276,7 +282,7 @@ $("#add-name").on("click", function(event) {
 				choice: ""
 			};
 
-			// Add player 2 to the database
+			// write p2 aka the above object to the database
 			database.ref().child("/players/p2").set(p2);
 
 			// If this user disconnects, remove them from the database. Refreshing
@@ -285,30 +291,31 @@ $("#add-name").on("click", function(event) {
 			database.ref("/players/p2").onDisconnect().remove();
 		}
 
-		// Add a user joining message to the chat
+		// print a message to the chat when a user joins via chatKey
 		var msg = yourPlayerName + " has joined!";
 		console.log(msg);
-
-		// Get a key for the join chat entry
 		var chatKey = database.ref().child("/chat/").push().key;
-
-		// Save the join chat entry
+		// push the key and write the chat message to the database
 		database.ref("/chat/" + chatKey).set(msg);
 
-		// Reset the name input box
-		$("#name-input").val("");	
+		// hide the name input textbox and submit button
+		// after the user has pressed it so they aren't
+		// tempted to try double-entering names, etc 
+		$("#formcontain").hide()
 	}
 });
 
-// Attach an event handler to the chat "Send" button to append the new message to the conversation
+// The database is listening for the send button to be clicked on chat - we
+// have to use preventDefault here because it's a form submit button 
+// and we don't want the page to be refreshed when it is clicked
 $("#chat-send").on("click", function(event) {
 	event.preventDefault();
 
-	// First, make sure that the player exists and the message box is non-empty
-	if ( (yourPlayerName !== "") && ($("#chat-input").val().trim() !== "") ) {
+	// First, make sure that the player exists and the message textbox has text in it
+	if ( (yourPlayerName !== "") && ($("#chat-text").val().trim() !== "") ) {
 		// Grab the message from the input box and subsequently reset the input box
-		var msg = yourPlayerName + ": " + $("#chat-input").val().trim();
-		$("#chat-input").val("");
+		var msg = yourPlayerName + ": " + $("#chat-text").val().trim();
+		$("#chat-text").val("");
 
 		// Get a key for the new chat entry
 		var chatKey = database.ref().child("/chat/").push().key;
