@@ -115,7 +115,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		console.log("Player 2 exists in the database");
 
 		// set local variables for player 1
-		p1 = snapshot.val().p2;
+		p2 = snapshot.val().p2;
 		p2name = p2.name;
 
 		// display player 1's name and score data 
@@ -139,9 +139,9 @@ database.ref("/players/").on("value", function(snapshot) {
     
     // If both players are now present, it's player1's turn
 	if (p1 && p2) {
-
+        console.log("Both players are now present")
 		// Update the display with a green border around player 1
-		$("#playerPanel1").addClass("yourTurn");
+		$("#p1displaydata").addClass("yourTurn");
 
 		// Update the center display
 		$("#outcome").html("Waiting on " + p1name + " to choose...");
