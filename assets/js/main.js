@@ -136,4 +136,14 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#scoreboard").html("Waiting for Players to join");
 		$("#p2data").html("Win: 0, Loss: 0, Tie: 0");
     }
+    
+    // If both players are now present, it's player1's turn
+	if (p1 && p2) {
+
+		// Update the display with a green border around player 1
+		$("#playerPanel1").addClass("yourTurn");
+
+		// Update the center display
+		$("#outcome").html("Waiting on " + p1name + " to choose...");
+	}
 });
