@@ -1,7 +1,5 @@
 .yourTurn{
-    border-style:solid;
-    border-color:green;
-    border-width:5px;
+    background-color:green;
 }
 
 #p1name, #p2name{
@@ -14,4 +12,17 @@ icon, button {
 
 .btn-primary{
     height:60px;
+}
+
+.jumbotron p{
+    font-size:12px;
+    margin-bottom:0px;
+}
+
+.chatColor1 {
+	color: #b03138;
+}
+
+.chatColor2 {
+	color: #084596;
 }

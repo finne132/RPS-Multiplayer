@@ -1,5 +1,9 @@
 "use strict";
 
+$( document ).ready(function() {
+	// Handler for .ready() called.
+
+
 // -----ID selectors-----ID selectors-----ID selectors-----ID selectors-----ID selectors-----ID selectors-----ID selectors-----
 
 // #maintitle - main title div
@@ -143,11 +147,11 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#p2data").html("Wins: 0 Losses: 0 Ties: 0");
     }
     
-    // If both players are now present, it's player1's turn
+    // If both players are now present, it's p1's turn
 	if (p1 && p2) {
         console.log("Both players are now present")
 		// Update the display with a green border around player 1
-		$("#p1displaydata").addClass("yourTurn");
+		$("#p1display").addClass("yourTurn");
 
 		// Update the center display
 		$("#outcome").html("Waiting on " + p1name + " to choose...");
@@ -160,8 +164,8 @@ database.ref("/players/").on("value", function(snapshot) {
 		database.ref("/outcome/").remove();
 
 		$("#chatdisplay").empty();
-		$("#p1displaydata").removeClass("yourTurn");
-		$("#p2displaydata").removeClass("yourTurn");
+		$("#p1display").removeClass("yourTurn");
+		$("#p2display").removeClass("yourTurn");
 		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
 	}
     
@@ -170,14 +174,13 @@ database.ref("/players/").on("value", function(snapshot) {
 // Attach an event handler to the "Submit" button to add a new user to the database
 $("#add-name").on("click", function(event) {
 	event.preventDefault();
-
 	// First, make sure that the name field is non-empty and we are still waiting for a player
-	if ( ($("#name-input").val().trim() !== "") && !(player1 && player2) ) {
-		// Adding player1
-		if (player1 === null) {
+	if ( ($("#name-input").val().trim() !== "") && !(p1 && p2) ) {
+		// Adding p1
+		if (p1 === null) {
 			console.log("Adding Player 1");
 
-			yourPlayerName = $("#name-text").val().trim();
+			yourPlayerName = $("#name-input").val().trim();
 			p1 = {
 				name: yourPlayerName,
 				win: 0,
@@ -199,10 +202,10 @@ $("#add-name").on("click", function(event) {
             
         } 
         // if player 1 exists and player 2 does not exist...
-        else if( (player1 !== null) && (player2 === null) ) {
+        else if( (p1 !== null) && (p2 === null) ) {
 			// Then add player 2
 			console.log("Adding Player 2");
-			yourPlayerName = $("#name-text").val().trim();
+			yourPlayerName = $("#name-input").val().trim();
 			p2 = {
 				name: yourPlayerName,
 				win: 0,
@@ -221,8 +224,8 @@ $("#add-name").on("click", function(event) {
 		}
 
 		// Add a user joining message to the chat
-		var msg = yourPlayerName + " has joined the game";
-		console.log(`user joined chat, displaying... ${msg}`);
+		var msg = yourPlayerName + " has joined!";
+		console.log(msg);
 
 		// Get a key for the join chat entry
 		var chatKey = database.ref().child("/chat/").push().key;
@@ -233,4 +236,6 @@ $("#add-name").on("click", function(event) {
 		// Reset the name input box
 		$("#name-input").val("");	
 	}
+});
+
 });

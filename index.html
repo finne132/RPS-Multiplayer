@@ -34,23 +34,23 @@
                 </div>
             </div>
             <div class="row text-center">
-                <div class="col-xs-1"></div>
+
                 <div class="col-xs-5 jumbotron" id="p1display">p1display</div>
+                <div class="col-xs-2" id="outcome"></div>
                 <div class="col-xs-5 jumbotron" id="p2display">p2display</div>
-                <div class="col-xs-1"></div>
+
             </div>
             <div class="row">
                 <div class="col-xs-1"></div>
-                <div class="col-xs-10 jumbotron">
-                    <form>
-                        Name: 
-                        <input type="text" name="name" value="">
-                        <input type="submit" value="Ready!">
+                <div class="col-xs-10 jumbotron" style="margin-bottom:10px;">
+                    <form id="name-form">
+                        <input type="text" id="name-input" placeholder="Your Name">
+                        <input id="add-name" type="submit" value="Submit">
                     </form> 
                 </div>
                 <div class="col-xs-1"></div>
             </div>
-            <div class="row">
+            <div class="row" style="margin:15px;">
                 <div class="col-xs-4">
                     <!--button goes here-->
                     <button class="btn-primary">Rock <i class="far fa-hand-rock"></i></button>
@@ -65,8 +65,26 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12"></div>
-            </div>
+                <!-- Chat Section -->
+
+                <div class="col-xs-12">
+                    <div id="chatdisplay"></div>
+                </div>
+    
+                <div class="col-xs-12"> 
+                    <div class="chatInput">
+                        <div class="chatLabel">Type Your Message!</div>
+    
+                        <div class="chatPanel"> 
+                            <form id="chat-form">
+                                <textarea type="text" id="chat-input"></textarea>
+                                <input id="chat-send" type="submit" value="Send">
+                            </form>
+                        </div>
+                    </div>
+                  </div> <!-- End Player Name Section  -->
+    
+            </div> <!-- End Chat Section  -->
             <div class="row">
                 <div class="col-xs-12"></div>
             </div>
