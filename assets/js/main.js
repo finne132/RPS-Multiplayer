@@ -115,8 +115,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		// Display "empty" state for p1 
 		$("#p1name").text("Waiting for Player 1...");
 		database.ref("/outcome/").remove();
-		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
-		$("#scoreboard").html("Waiting for Players to join");
+		$("#outcome").html("Rock! Paper! Scissors! Shoot!");
 		$("#p2data").html("Wins: 0 Losses: 0 Ties: 0");
     }
 
@@ -140,7 +139,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		// Display "empty" state for p1 
 		$("#p2name").text("Waiting for Player 2...");
 		database.ref("/outcome/").remove();
-		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
+		$("#outcome").html("Rock! Paper! Scissors! Shoot!");
 		$("#scoreboard").html("Waiting for Players to join");
 		$("#p2data").html("Wins: 0 Losses: 0 Ties: 0");
     }
@@ -160,61 +159,75 @@ database.ref("/players/").on("value", function(snapshot) {
 		database.ref("/chat/").remove();
 		database.ref("/turn/").remove();
 		database.ref("/outcome/").remove();
-
 		$("#chatdisplay").empty();
 		$("#p1display").removeClass("yourTurn");
 		$("#p2display").removeClass("yourTurn");
-		$("#outcome").html("Rock! Paper! Scissors.... Shoot!");
+		$("#outcome").html("Rock! Paper! Scissors! Shoot!");
 	}
     
 });
-// Attach a listener that detects user disconnection events
+// The database is listening for users to disconnect via "child_removed"
+// disconnection happens by closing the window or refreshing the page
 database.ref("/players/").on("child_removed", function(snapshot) {
 	var msg = snapshot.val().name + " has disconnected!";
 
-	// Get a key for the disconnection chat entry
+	// use a unique key for the disconnection chat entry
 	var chatKey = database.ref().child("/chat/").push().key;
 
-	// Save the disconnection chat entry
+	// save the disconnection chat entry to the database with the key
 	database.ref("/chat/" + chatKey).set(msg);
 });
 
-// Attach a listener to the database /chat/ node to listen for any new chat messages
+// The database is listening for any new chat messages via "child_added"
+// inside of the chat keyvalue pair 
 database.ref("/chat/").on("child_added", function(snapshot) {
+	// get the new message from the database
 	var chatMsg = snapshot.val();
+	// make a chat variable to append new chat lines into divs
 	var chatEntry = $("<div>").html(chatMsg);
 
+	// if YOU sent the chat message, the name appears in red
 	if (chatMsg.startsWith(yourPlayerName)) {
 		chatEntry.addClass("p1color");
+	// if you DID NOT send the chat message, the name appears in blue
 	} else {
 		chatEntry.addClass("p2color");
 	}
 
+	// append the div stored in chatEntry with its new styling to the DOM
 	$("#chatdisplay").append(chatEntry);
+	// use ScrollHeight to keep the chat going
 	$("#chatdisplay").scrollTop($("#chatdisplay")[0].scrollHeight);
 });
 
-// Attach a listener to the database /turn/ node to listen for any changes
+// The database is listening for the "turn" variable to change
+// it only changes between 1 and 2 depending on whether it is 
+// player 1's turn or player 2's turn
+
 database.ref("/turn/").on("value", function(snapshot) {
 	// Check if it's p1's turn
 	if (snapshot.val() === 1) {
-		console.log("TURN 1");
+		console.log("turn 1");
 		turn = 1;
-
-		// Update the display if both players are in the game
+		// make sure that both players have joined the game
+		// then make the p1 display pane green if it is player 1's
+		// turn and makes sure players 2 panel is not green
 		if (p1 && p2) {
 			$("#p1display").addClass("yourTurn");
 			$("#p2display").removeClass("yourTurn");
+			// show when p1 still has to pick
 			$("#outcome").html("Waiting on " + p1name + " to choose...");
 		}
+		//otherwise, do the opposite for player 2 and make their
+		// panel green and p2's panel not green 
 	} else if (snapshot.val() === 2) {
 		console.log("TURN 2");
 		turn = 2;
-
-		// Update the display if both players are in the game
 		if (p1 && p2) {
 			$("#p1display").removeClass("yourTurn");
 			$("#p2display").addClass("yourTurn");
+
+			// show when p2 still has to pick 
 			$("#outcome").html("Waiting on " + p2name + " to choose...");
 		}
 	}
