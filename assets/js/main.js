@@ -50,8 +50,8 @@ database.ref("/players/").on("value", function(snapshot) {
     
     // Check to see if player 1 exists in our database - if it does, set variables and display
     // player 1's name and data. If it doesn't exist, display waiting for player 1 
-	if (snapshot.child("player1").exists()) {
-		console.log("Player 1 exists");
+	if (snapshot.child("p1").exists()) {
+		console.log("Player 1 exists in the database");
 
 		// set local variables for player 1
 		p1 = snapshot.val().p1;
