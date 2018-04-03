@@ -1,4 +1,5 @@
 <!DOCTYPE HTML>
+<!-- bootstrapped for MOBILE compatibility -->
 <html>
     <head>
         <meta charset="utf-8" />
@@ -52,41 +53,36 @@
             </div>
             <div class="row" style="margin:15px;">
                 <div class="col-xs-4">
-                    <!--button goes here-->
+                    <!--rock button goes here-->
                     <button class="btn-primary" id="rock">Rock <i class="far fa-hand-rock"></i></button>
                 </div>
                 <div class="col-xs-4">
-                    <!--button goes here-->
+                    <!--paper button goes here-->
                     <button class="btn-primary" id="paper">Paper <i class="far fa-hand-paper"></i></button>
                 </div>
                 <div class="col-xs-4">
-                    <!--button goes here-->
+                    <!--scissors button goes here-->
                     <button class="btn-primary" id="scissors">Scissors <i class="far fa-hand-scissors"></i></button>
                 </div>
             </div>
             <div class="row">
-                <!-- Chat Section -->
-
+                <!-- this will hold the chat display data -->
                 <div class="col-xs-12">
                     <div id="chatdisplay" class="text-left"></div>
                 </div>
-    
-                <div class="col-xs-12"> 
-                    <div class="chatInput">
-                        <div class="chatLabel">Type Your Message!</div>
-    
-                        <div class="chatPanel"> 
-                            <form id="chat-form">
-                                <textarea type="text" id="chat-text"></textarea>
-                                <input id="chat-send" type="submit" value="Send">
-                            </form>
-                        </div>
+            <div class="col-xs-12">
+                <!-- hold the mini form for chat input - message text box and submit button --> 
+                <div class="chatInput">
+                    <div class="chatLabel">Type Your Message!</div>
+
+                    <div class="chatPanel"> 
+                        <form id="chat-form">
+                            <textarea type="text" id="chat-text"></textarea>
+                            <input id="chat-send" type="submit" value="Send">
+                        </form>
                     </div>
-                  </div> <!-- End Player Name Section  -->
-    
-            </div> <!-- End Chat Section  -->
-            <div class="row">
-                <div class="col-xs-12"></div>
+                </div>
+                </div>
             </div>
         </div>
     </body>    

@@ -325,15 +325,25 @@ $("#chat-send").on("click", function(event) {
 	}
 });
 
-// Monitor p1's selection
+// The database has to listen for player 1 to press one of the
+// three possible buttons, but only when turn = 1. Therefore 
+// the buttons are inactive for player 1 when it is player 2's 
+// turn and vice-versa. The inverse applies below for player 2 
+
+// There are rock, paper, and scissor button handlers for p1 
+// and p2 respectively. I did think that you could intelligently
+// figure out which player clicked the button by their name or even
+// using the css class applied to their chat color, but it was a stretch
+// goal for this and I ran out of time
 $("#rock").on("click", function() {
-	// Make selections only when both players are in the game
+	// buttons are only active if there are two players and turn is 1
 	if (p1 && p2 && (yourPlayerName === p1.name) && (turn === 1) ) {
-		// Record p1's choice
+		// grab the text value from the button using this and
+		// assign it to the choice variable
 		var choice = $(this).text().trim();
 		console.log("player selected "+  $(this).text());
-		// Record the player choice into the database
 		p1Choice = choice;
+		// write the choice variable to the database for p1
 		database.ref().child("/players/p1/choice").set(choice);
 
 		// Set the turn value to 2, as it is now p2's turn
@@ -374,7 +384,10 @@ $("#scissors").on("click", function() {
 	}
 });
 
-// Monitor p2's selection
+// listen for p2 to click the options when it is their turn
+// see the comment for p1's #rock click handler function
+// for more details, this is just copied and pasted and variables 
+// swapped from p1 to p2 for rock, paper, and scissors and turn
 $("#rock").on("click", function() {
 	event.preventDefault();
 
@@ -426,56 +439,48 @@ $("#scissors").on("click", function() {
 	}
 });
 
-// compareChoices is the main rock/paper/scissors logic to see which player wins
+//classic RPS game logic to pick a winner 
 function compareChoices() {
 	if (p1.choice === "Rock") {
 		if (p2.choice === "Rock") {
 			// Tie
 			console.log("tie");
-
 			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/p1/tie").set(p1.tie + 1);
 			database.ref().child("/players/p2/tie").set(p2.tie + 1);
 		} else if (p2.choice === "Paper") {
 			// p2 wins
 			console.log("paper wins");
-
 			database.ref().child("/outcome/").set("Paper wins!");
 			database.ref().child("/players/p1/loss").set(p1.loss + 1);
 			database.ref().child("/players/p2/win").set(p2.win + 1);
 		} else { // scissors
 			// p1 wins
 			console.log("rock wins");
-
 			database.ref().child("/outcome/").set("Rock wins!");
 			database.ref().child("/players/p1/win").set(p1.win + 1);
 			database.ref().child("/players/p2/loss").set(p2.loss + 1);
 		}
-
 	} else if (p1.choice === "Paper") {
 		if (p2.choice === "Rock") {
 			// p1 wins
 			console.log("paper wins");
-
 			database.ref().child("/outcome/").set("Paper wins!");
 			database.ref().child("/players/p1/win").set(p1.win + 1);
 			database.ref().child("/players/p2/loss").set(p2.loss + 1);
 		} else if (p2.choice === "Paper") {
 			// Tie
 			console.log("tie");
-
 			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/p1/tie").set(p1.tie + 1);
 			database.ref().child("/players/p2/tie").set(p2.tie + 1);
 		} else { // Scissors
 			// p2 wins
 			console.log("scissors win");
-
 			database.ref().child("/outcome/").set("Scissors win!");
 			database.ref().child("/players/p1/loss").set(p1.loss + 1);
 			database.ref().child("/players/p2/win").set(p2.win + 1);
 		}
-
 	} else if (p1.choice === "Scissors") {
 		if (p2.choice === "Rock") {
 			// p2 wins
@@ -502,7 +507,10 @@ function compareChoices() {
 
 	}
 
-	// Set the turn value to 1, as it is now p1's turn
+	// reset back to player 1's turn
+	// this also helps make sure that for every "new game"
+	// turn is set to 1 as a variable in this code
+	// AND as an element in the database
 	turn = 1;
 	database.ref().child("/turn").set(1);
 }
