@@ -56,11 +56,29 @@ var config = {
 firebase.initializeApp(config);
 console.log("firebase database connection initialized");
 
-var database = firebase.database();
+const database = firebase.database();
 console.log("Local database variable assigned");
 
 // good resource for referencing firebase databases: 
 // https://firebase.google.com/docs/reference/js/firebase.database.Reference
+
+// player var objects
+let p1 = null;
+let p2 = null;
+
+// Store the player names
+let p1name = "";
+let p2name = "";
+
+// Store the name of the player in the user's browser
+let yourPlayerName = "";
+
+// Store the player choices
+let p1choice = "";
+let p2choice = "";
+
+// set the turn variable equal to player 1's turn
+let turn = 1;
 
 // listen to the players node of the database to see if anything changes
 database.ref("/players/").on("value", function(snapshot) {
@@ -76,7 +94,7 @@ database.ref("/players/").on("value", function(snapshot) {
 
 		// display player 1's name and score data 
 		$("#p1name").text(p1name);
-		$("#p2data").html("Wins: " + p1.win + ", Losses: " + p1.loss + ", Tie: " + p1.tie);
+		$("#p1data").html("Wins: " + p1.win + ", Losses: " + p1.loss + ", Tie: " + p1.tie);
     } 
 
     // what happens if player 1 doesn't exist?
